@@ -1,29 +1,36 @@
 import os
 import shutil
 
-from absolufy_imports import main
+from absolufy_imports.__main__ import main
 
 
-def test_main(tmpdir):
-    # make src/mypackage/mysubpackage/bar.py
-    os.mkdir(os.path.join(str(tmpdir), 'src'))
-    os.mkdir(os.path.join(str(tmpdir), 'src', 'mypackage'))
-    os.mkdir(os.path.join(str(tmpdir), 'src', 'mypackage', 'mysubpackage'))
+def test_main(tmpdir) -> None:
+    os.mkdir(os.path.join(str(tmpdir), "src"))
+    os.mkdir(os.path.join(str(tmpdir), "src", "mypackage"))
+    os.mkdir(os.path.join(str(tmpdir), "src", "mypackage", "mysubpackage"))
     tmp_file = os.path.join(
-        str(tmpdir), 'src', 'mypackage', 'mysubpackage', 'bar.py',
+        str(tmpdir),
+        "src",
+        "mypackage",
+        "mysubpackage",
+        "bar.py",
     )
     shutil.copy(
-        os.path.join('tests', 'data', 'bar.py'), tmp_file,
+        os.path.join(os.getcwd(), "tests", "test_files", "bar.py"),
+        tmp_file,
     )
 
-    # make mypackage/mysubpackage/bar.py
-    os.mkdir(os.path.join(str(tmpdir), 'mypackage'))
-    os.mkdir(os.path.join(str(tmpdir), 'mypackage', 'mysubpackage'))
+    os.mkdir(os.path.join(str(tmpdir), "mypackage"))
+    os.mkdir(os.path.join(str(tmpdir), "mypackage", "mysubpackage"))
     tmp_file_1 = os.path.join(
-        str(tmpdir), 'mypackage', 'mysubpackage', 'bar.py',
+        str(tmpdir),
+        "mypackage",
+        "mysubpackage",
+        "bar.py",
     )
     shutil.copy(
-        os.path.join('tests', 'data', 'bar.py'), tmp_file_1,
+        os.path.join(os.getcwd(), "tests", "test_files", "bar.py"),
+        tmp_file_1,
     )
 
     cwd = os.getcwd()
@@ -32,15 +39,20 @@ def test_main(tmpdir):
         main(
             (
                 os.path.join(
-                    str(tmpdir), 'mypackage',
-                    'mysubpackage', 'bar.py',
+                    str(tmpdir),
+                    "mypackage",
+                    "mysubpackage",
+                    "bar.py",
                 ),
                 os.path.join(
-                    str(tmpdir), 'src', 'mypackage',
-                    'mysubpackage', 'bar.py',
+                    str(tmpdir),
+                    "src",
+                    "mypackage",
+                    "mysubpackage",
+                    "bar.py",
                 ),
-                '--application-directories',
-                '.:src',
+                "--application-directories",
+                ".:src",
             ),
         )
     finally:
@@ -49,54 +61,61 @@ def test_main(tmpdir):
     with open(tmp_file) as fd:
         result = fd.read()
     expected = (
-        'from mypackage.mysubpackage import B\n'
-        'from mypackage.mysubpackage.bar import baz\n'
-        'from mypackage.foo import T\n'
-        'from mypackage.mysubpackage.bar import D\n'
-        'from mypackage.mysubpackage import O\n'
-        'from datetime import datetime\n'
-        '\n'
-        'print(T)\n'
-        'print(D)\n'
+        "from mypackage.mysubpackage import B\n"
+        "from mypackage.mysubpackage.bar import baz\n"
+        "from mypackage.foo import T\n"
+        "from .bar import D\n"
+        "from . import O\n"
+        "from datetime import datetime\n"
+        "\n"
+        "print(T)\n"
+        "print(D)\n"
     )
     assert result == expected
 
     with open(tmp_file_1) as fd:
         result = fd.read()
     expected = (
-        'from mypackage.mysubpackage import B\n'
-        'from mypackage.mysubpackage.bar import baz\n'
-        'from mypackage.foo import T\n'
-        'from mypackage.mysubpackage.bar import D\n'
-        'from mypackage.mysubpackage import O\n'
-        'from datetime import datetime\n'
-        '\n'
-        'print(T)\n'
-        'print(D)\n'
+        "from mypackage.mysubpackage import B\n"
+        "from mypackage.mysubpackage.bar import baz\n"
+        "from mypackage.foo import T\n"
+        "from .bar import D\n"
+        "from . import O\n"
+        "from datetime import datetime\n"
+        "\n"
+        "print(T)\n"
+        "print(D)\n"
     )
     assert result == expected
 
 
-def test_main_inverted_order(tmpdir):
-    # make src/mypackage/mysubpackage/bar.py
-    os.mkdir(os.path.join(str(tmpdir), 'src'))
-    os.mkdir(os.path.join(str(tmpdir), 'src', 'mypackage'))
-    os.mkdir(os.path.join(str(tmpdir), 'src', 'mypackage', 'mysubpackage'))
+def test_main_inverted_order(tmpdir) -> None:
+    os.mkdir(os.path.join(str(tmpdir), "src"))
+    os.mkdir(os.path.join(str(tmpdir), "src", "mypackage"))
+    os.mkdir(os.path.join(str(tmpdir), "src", "mypackage", "mysubpackage"))
     tmp_file = os.path.join(
-        str(tmpdir), 'src', 'mypackage', 'mysubpackage', 'bar.py',
+        str(tmpdir),
+        "src",
+        "mypackage",
+        "mysubpackage",
+        "bar.py",
     )
     shutil.copy(
-        os.path.join('tests', 'data', 'bar.py'), tmp_file,
+        os.path.join(os.getcwd(), "tests", "test_files", "bar.py"),
+        tmp_file,
     )
 
-    # make mypackage/mysubpackage/bar.py
-    os.mkdir(os.path.join(str(tmpdir), 'mypackage'))
-    os.mkdir(os.path.join(str(tmpdir), 'mypackage', 'mysubpackage'))
+    os.mkdir(os.path.join(str(tmpdir), "mypackage"))
+    os.mkdir(os.path.join(str(tmpdir), "mypackage", "mysubpackage"))
     tmp_file_1 = os.path.join(
-        str(tmpdir), 'mypackage', 'mysubpackage', 'bar.py',
+        str(tmpdir),
+        "mypackage",
+        "mysubpackage",
+        "bar.py",
     )
     shutil.copy(
-        os.path.join('tests', 'data', 'bar.py'), tmp_file_1,
+        os.path.join(os.getcwd(), "tests", "test_files", "bar.py"),
+        tmp_file_1,
     )
 
     cwd = os.getcwd()
@@ -105,15 +124,20 @@ def test_main_inverted_order(tmpdir):
         main(
             (
                 os.path.join(
-                    str(tmpdir), 'mypackage',
-                    'mysubpackage', 'bar.py',
+                    str(tmpdir),
+                    "mypackage",
+                    "mysubpackage",
+                    "bar.py",
                 ),
                 os.path.join(
-                    str(tmpdir), 'src', 'mypackage',
-                    'mysubpackage', 'bar.py',
+                    str(tmpdir),
+                    "src",
+                    "mypackage",
+                    "mysubpackage",
+                    "bar.py",
                 ),
-                '--application-directories',
-                '.:src',
+                "--application-directories",
+                ".:src",
             ),
         )
     finally:
@@ -122,43 +146,48 @@ def test_main_inverted_order(tmpdir):
     with open(tmp_file) as fd:
         result = fd.read()
     expected = (
-        'from mypackage.mysubpackage import B\n'
-        'from mypackage.mysubpackage.bar import baz\n'
-        'from mypackage.foo import T\n'
-        'from mypackage.mysubpackage.bar import D\n'
-        'from mypackage.mysubpackage import O\n'
-        'from datetime import datetime\n'
-        '\n'
-        'print(T)\n'
-        'print(D)\n'
+        "from mypackage.mysubpackage import B\n"
+        "from mypackage.mysubpackage.bar import baz\n"
+        "from mypackage.foo import T\n"
+        "from .bar import D\n"
+        "from . import O\n"
+        "from datetime import datetime\n"
+        "\n"
+        "print(T)\n"
+        "print(D)\n"
     )
     assert result == expected
 
     with open(tmp_file_1) as fd:
         result = fd.read()
     expected = (
-        'from mypackage.mysubpackage import B\n'
-        'from mypackage.mysubpackage.bar import baz\n'
-        'from mypackage.foo import T\n'
-        'from mypackage.mysubpackage.bar import D\n'
-        'from mypackage.mysubpackage import O\n'
-        'from datetime import datetime\n'
-        '\n'
-        'print(T)\n'
-        'print(D)\n'
+        "from mypackage.mysubpackage import B\n"
+        "from mypackage.mysubpackage.bar import baz\n"
+        "from mypackage.foo import T\n"
+        "from .bar import D\n"
+        "from . import O\n"
+        "from datetime import datetime\n"
+        "\n"
+        "print(T)\n"
+        "print(D)\n"
     )
     assert result == expected
 
 
-def test_relative_imports(tmpdir):
-    os.mkdir(os.path.join(str(tmpdir), 'src'))
-    os.mkdir(os.path.join(str(tmpdir), 'src', 'mypackage'))
-    os.mkdir(os.path.join(str(tmpdir), 'src', 'mypackage', 'mysubpackage'))
+def test_relative_imports(tmpdir) -> None:
+    os.mkdir(os.path.join(str(tmpdir), "src"))
+    os.mkdir(os.path.join(str(tmpdir), "src", "mypackage"))
+    os.mkdir(os.path.join(str(tmpdir), "src", "mypackage", "mysubpackage"))
     tmp_file = os.path.join(
-        str(tmpdir), 'src', 'mypackage', 'mysubpackage', 'bar.py',
+        str(tmpdir),
+        "src",
+        "mypackage",
+        "mysubpackage",
+        "bar.py",
     )
     shutil.copy(
-        os.path.join('tests', 'data', 'bar.py'), tmp_file,
+        os.path.join(os.getcwd(), "tests", "test_files", "bar.py"),
+        tmp_file,
     )
 
     cwd = os.getcwd()
@@ -167,11 +196,14 @@ def test_relative_imports(tmpdir):
         main(
             (
                 os.path.join(
-                    str(tmpdir), 'src', 'mypackage',
-                    'mysubpackage', 'bar.py',
+                    str(tmpdir),
+                    "src",
+                    "mypackage",
+                    "mysubpackage",
+                    "bar.py",
                 ),
-                '--application-directories',
-                '.:src',
+                "--application-directories",
+                ".:src",
             ),
         )
     finally:
@@ -182,12 +214,15 @@ def test_relative_imports(tmpdir):
         main(
             (
                 os.path.join(
-                    str(tmpdir), 'src', 'mypackage',
-                    'mysubpackage', 'bar.py',
+                    str(tmpdir),
+                    "src",
+                    "mypackage",
+                    "mysubpackage",
+                    "bar.py",
                 ),
-                '--application-directories',
-                '.:src',
-                '--never',
+                "--application-directories",
+                ".:src",
+                "--never",
             ),
         )
     finally:
@@ -196,14 +231,14 @@ def test_relative_imports(tmpdir):
     with open(tmp_file) as fd:
         result = fd.read()
     expected = (
-        'from . import B\n'
-        'from .bar import baz\n'
-        'from mypackage.foo import T\n'
-        'from .bar import D\n'
-        'from . import O\n'
-        'from datetime import datetime\n'
-        '\n'
-        'print(T)\n'
-        'print(D)\n'
+        "from . import B\n"
+        "from .bar import baz\n"
+        "from mypackage.foo import T\n"
+        "from .bar import D\n"
+        "from . import O\n"
+        "from datetime import datetime\n"
+        "\n"
+        "print(T)\n"
+        "print(D)\n"
     )
     assert result == expected

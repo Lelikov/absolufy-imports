@@ -1,45 +1,44 @@
-exclude: ^tests/data/
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+  - repo: local
     hooks:
-    -   id: check-docstring-first
-    -   id: check-yaml
-    -   id: debug-statements
-    -   id: double-quote-string-fixer
-    -   id: end-of-file-fixer
-    -   id: name-tests-test
-    -   id: requirements-txt-fixer
-    -   id: trailing-whitespace
--   repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.2.0
-    hooks:
-    -   id: setup-cfg-fmt
--   repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
-    hooks:
-    -   id: flake8
-        additional_dependencies: [flake8-typing-imports==1.14.0]
--   repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v2.0.2
-    hooks:
-    -   id: autopep8
--   repo: https://github.com/asottile/reorder-python-imports
-    rev: v3.9.0
-    hooks:
-    -   id: reorder-python-imports
-        args: [--py3-plus]
--   repo: https://github.com/asottile/add-trailing-comma
-    rev: v2.4.0
-    hooks:
-    -   id: add-trailing-comma
-        args: [--py36-plus]
--   repo: https://github.com/asottile/pyupgrade
-    rev: v3.4.0
-    hooks:
-    -   id: pyupgrade
-        args: [--py37-plus]
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.3.0
-    hooks:
-    -   id: mypy
+      - id: ruff_check
+        name: ruff-check
+        stages: [ commit ]
+        language: system
+        entry: poetry run ruff check
+        types: [ python ]
+      - id: ruff_format
+        name: ruff-format
+        stages: [ commit ]
+        language: system
+        entry: poetry run ruff format
+        types: [ python ]
+      - id: mypy
+        name: mypy
+        stages: [commit]
+        language: system
+        entry: poetry run mypy
+        args: [--disallow-untyped-defs, --disallow-incomplete-defs, --no-implicit-optional, --local-partial-types, --strict-equality, ]
+        types: [python]
+        require_serial: true
+        exclude: tests
+      - id: pylint
+        name: pylint
+        stages: [commit]
+        language: system
+        entry: poetry run pylint
+        types: [python]
+        exclude: alembic
+      - id: commit-msg-with-branch-issue
+        name: commit message with issue
+        stages: [prepare-commit-msg]
+        language: python
+        entry: commit-msg-with-branch-issue
+      - id: bandit
+        name: bandit
+        stages: [commit]
+        language: system
+        entry: poetry run bandit
+        args: ['-c', 'pyproject.toml', '-r', 'rbill_core']
+        types: [python]
+        exclude: alembic

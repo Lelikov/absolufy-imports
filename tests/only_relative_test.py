@@ -1,17 +1,22 @@
+# pylint:disable=duplicate-code
 import os
 import shutil
 
-from absolufy_imports import main
+from absolufy_imports.__main__ import main
 
 
-def test_main(tmpdir):
-    os.mkdir(os.path.join(str(tmpdir), 'mypackage'))
-    os.mkdir(os.path.join(str(tmpdir), 'mypackage', 'mysubpackage'))
+def test_main(tmpdir) -> None:
+    os.mkdir(os.path.join(str(tmpdir), "mypackage"))
+    os.mkdir(os.path.join(str(tmpdir), "mypackage", "mysubpackage"))
     tmp_file = os.path.join(
-        str(tmpdir), 'mypackage', 'mysubpackage', 'bar.py',
+        str(tmpdir),
+        "mypackage",
+        "mysubpackage",
+        "bar.py",
     )
     shutil.copy(
-        os.path.join('tests', 'data', 'bar.py'), tmp_file,
+        os.path.join(os.getcwd(), "tests", "test_files", "bar.py"),
+        tmp_file,
     )
 
     cwd = os.getcwd()
@@ -19,8 +24,8 @@ def test_main(tmpdir):
     try:
         main(
             (
-                '--never',
-                os.path.join('mypackage', 'mysubpackage', 'bar.py'),
+                "--never",
+                os.path.join("mypackage", "mysubpackage", "bar.py"),
             ),
         )
     finally:
@@ -30,14 +35,14 @@ def test_main(tmpdir):
         result = fd.read()
 
     expected = (
-        'from . import B\n'
-        'from .bar import baz\n'
-        'from ..foo import T\n'
-        'from .bar import D\n'
-        'from . import O\n'
-        'from datetime import datetime\n'
-        '\n'
-        'print(T)\n'
-        'print(D)\n'
+        "from . import B\n"
+        "from .bar import baz\n"
+        "from ..foo import T\n"
+        "from .bar import D\n"
+        "from . import O\n"
+        "from datetime import datetime\n"
+        "\n"
+        "print(T)\n"
+        "print(D)\n"
     )
     assert result == expected

@@ -1,4 +1,4 @@
-from .import O
+from . import O
 
 print(T)
 print(D)
